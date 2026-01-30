@@ -3,11 +3,11 @@
 import type { Table } from "@tanstack/react-table";
 import { useQueryStates } from "nuqs";
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
+  CaretLeft,
+  CaretRight,
+  CaretDoubleLeft,
+  CaretDoubleRight,
+} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -36,23 +36,24 @@ export const EventTablePagination = <T,>({
   );
 
   const pageCount = table.getPageCount();
+  const totalRows = table.getFilteredRowModel().rows.length;
 
   return (
-    <div className="flex items-center justify-between py-4">
-      <div className="text-muted-foreground text-sm">
-        {table.getFilteredRowModel().rows.length} event(s) total
+    <div className="flex items-center justify-between py-2">
+      <div className="text-xs text-muted-foreground">
+        <span className="font-data">{totalRows}</span> event{totalRows !== 1 ? "s" : ""}
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-sm">Rows</span>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-muted-foreground">Rows</span>
           <Select
             value={String(perPage)}
             onValueChange={(value) =>
               setParams({ perPage: Number(value), page: 1 })
             }
           >
-            <SelectTrigger size="sm" className="w-[70px]">
+            <SelectTrigger size="sm" className="w-[60px] h-7 rounded-md text-xs border-border/60">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -65,42 +66,48 @@ export const EventTablePagination = <T,>({
           </Select>
         </div>
 
-        <span className="text-sm tabular-nums">
-          Page {page} of {pageCount}
+        <span className="text-xs tabular-nums text-muted-foreground">
+          <span className="font-data">{page}</span>
+          <span className="mx-1 text-muted-foreground/40">/</span>
+          <span className="font-data">{pageCount}</span>
         </span>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Button
-            variant="outline"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-xs"
             onClick={() => setParams({ page: 1 })}
             disabled={!table.getCanPreviousPage()}
+            className="rounded-md text-muted-foreground hover:text-foreground"
           >
-            <ChevronsLeft className="size-4" />
+            <CaretDoubleLeft className="size-3.5" />
           </Button>
           <Button
-            variant="outline"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-xs"
             onClick={() => setParams({ page: page - 1 })}
             disabled={!table.getCanPreviousPage()}
+            className="rounded-md text-muted-foreground hover:text-foreground"
           >
-            <ChevronLeft className="size-4" />
+            <CaretLeft className="size-3.5" />
           </Button>
           <Button
-            variant="outline"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-xs"
             onClick={() => setParams({ page: page + 1 })}
             disabled={!table.getCanNextPage()}
+            className="rounded-md text-muted-foreground hover:text-foreground"
           >
-            <ChevronRight className="size-4" />
+            <CaretRight className="size-3.5" />
           </Button>
           <Button
-            variant="outline"
-            size="icon-sm"
+            variant="ghost"
+            size="icon-xs"
             onClick={() => setParams({ page: pageCount })}
             disabled={!table.getCanNextPage()}
+            className="rounded-md text-muted-foreground hover:text-foreground"
           >
-            <ChevronsRight className="size-4" />
+            <CaretDoubleRight className="size-3.5" />
           </Button>
         </div>
       </div>

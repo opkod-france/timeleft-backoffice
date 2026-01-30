@@ -1,4 +1,5 @@
 export type EventStatus = "upcoming" | "live" | "past";
+export type EventCategory = "dinner" | "drink" | "run";
 
 export type Country = {
   id: number;
