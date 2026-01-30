@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/button";
 import type { TimeleftEvent, EventStatus, EventCategory } from "@/features/events/types";
 import { fillRate, statusLabel, statusConfig, categoryConfig } from "@/features/events/helpers";
 
+const STATUS_SORT_ORDER: Record<EventStatus, number> = {
+  live: 0,
+  upcoming: 1,
+  past: 2,
+};
+
 const SortableHeader = ({
   column,
   label,
@@ -152,16 +158,8 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
         </Badge>
       );
     },
-    sortingFn: (rowA, rowB) => {
-      const order: Record<EventStatus, number> = {
-        live: 0,
-        upcoming: 1,
-        past: 2,
-      };
-      return (
-        order[rowA.getValue("status") as EventStatus] -
-        order[rowB.getValue("status") as EventStatus]
-      );
-    },
+    sortingFn: (rowA, rowB) =>
+      STATUS_SORT_ORDER[rowA.getValue("status") as EventStatus] -
+      STATUS_SORT_ORDER[rowB.getValue("status") as EventStatus],
   },
 ];

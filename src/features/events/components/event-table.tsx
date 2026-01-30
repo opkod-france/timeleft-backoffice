@@ -55,37 +55,41 @@ export const EventTable = () => {
   const filteredData = useMemo(() => {
     if (!events) return [];
 
-    let result = events;
+    const hasStatus = status !== "";
+    const hasSearch = search !== "";
+    const hasDateFrom = dateFrom !== null;
+    const hasDateTo = dateTo !== null;
+    const hasTypes = types.length > 0;
 
-    if (status) {
-      result = result.filter((e) => e.status === status);
+    // Fast path: no filters active
+    if (!hasStatus && !hasSearch && !hasDateFrom && !hasDateTo && !hasTypes) {
+      return events;
     }
 
-    if (search) {
-      const term = search.toLowerCase();
-      result = result.filter(
-        (e) =>
+    const term = hasSearch ? search.toLowerCase() : "";
+    const endOfTo = hasDateTo ? new Date(dateTo!) : null;
+    if (endOfTo) endOfTo.setHours(23, 59, 59, 999);
+    const typesSet = hasTypes ? new Set(types) : null;
+
+    const result: TimeleftEvent[] = [];
+
+    for (const e of events) {
+      if (hasStatus && e.status !== status) continue;
+      if (hasTypes && !typesSet!.has(e.type.toLowerCase() as EventCategory)) continue;
+      if (hasSearch) {
+        const match =
           e.type.toLowerCase().includes(term) ||
           e.zone.city.name.toLowerCase().includes(term) ||
           e.zone.city.country.name.toLowerCase().includes(term) ||
-          e.zone.name.toLowerCase().includes(term)
-      );
-    }
-
-    if (dateFrom) {
-      result = result.filter((e) => new Date(e.date) >= dateFrom);
-    }
-
-    if (dateTo) {
-      const endOfTo = new Date(dateTo);
-      endOfTo.setHours(23, 59, 59, 999);
-      result = result.filter((e) => new Date(e.date) <= endOfTo);
-    }
-
-    if (types.length > 0) {
-      result = result.filter((e) =>
-        types.includes(e.type.toLowerCase() as EventCategory)
-      );
+          e.zone.name.toLowerCase().includes(term);
+        if (!match) continue;
+      }
+      if (hasDateFrom || hasDateTo) {
+        const d = new Date(e.date);
+        if (hasDateFrom && d < dateFrom!) continue;
+        if (hasDateTo && d > endOfTo!) continue;
+      }
+      result.push(e);
     }
 
     return result;
@@ -144,9 +148,12 @@ export const EventTable = () => {
     manualFiltering: true,
   });
 
-  const handleRowClick = (eventId: string) => {
-    setEventId(eventId);
-  };
+  const handleRowClick = useCallback(
+    (eventId: string) => {
+      setEventId(eventId);
+    },
+    [setEventId]
+  );
 
   if (isError) {
     return (
@@ -216,6 +223,7 @@ export const EventTable = () => {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
+                    data-cv-auto=""
                     className="group cursor-pointer border-border/40 transition-colors hover:bg-muted/40"
                     onClick={() => handleRowClick(row.original.id)}
                   >

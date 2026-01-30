@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { useQueryState } from "nuqs";
 import { format } from "date-fns";
 import { MapPin, Calendar, Users, Clock, Hash } from "@phosphor-icons/react";
@@ -24,13 +25,17 @@ type EventDetailSheetProps = {
   events: TimeleftEvent[] | undefined;
 };
 
-export const EventDetailSheet = ({ events }: EventDetailSheetProps) => {
+export const EventDetailSheet = memo(function EventDetailSheet({ events }: EventDetailSheetProps) {
   const [eventId, setEventId] = useQueryState(
     "event",
     eventsSearchParams.event
   );
 
-  const event = events?.find((e) => e.id === eventId);
+  const eventById = useMemo(
+    () => new Map(events?.map((e) => [e.id, e]) ?? []),
+    [events]
+  );
+  const event = eventId ? eventById.get(eventId) : undefined;
   const isOpen = eventId !== "" && !!event;
 
   const handleOpenChange = (open: boolean) => {
@@ -214,4 +219,4 @@ export const EventDetailSheet = ({ events }: EventDetailSheetProps) => {
       </SheetContent>
     </Sheet>
   );
-};
+});

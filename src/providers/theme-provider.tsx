@@ -48,8 +48,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
-  }, [resolvedTheme, setTheme]);
+    setResolvedTheme((current) => {
+      const next = current === "dark" ? "light" : "dark";
+      setThemeState(next);
+      localStorage.setItem(STORAGE_KEY, next);
+      applyClass(next);
+      return next;
+    });
+  }, []);
 
   // Hydrate from localStorage on mount
   useEffect(() => {

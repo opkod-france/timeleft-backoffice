@@ -1,5 +1,6 @@
 "use client";
 
+import { startTransition } from "react";
 import { useQueryStates } from "nuqs";
 import {
   MagnifyingGlass,
@@ -67,9 +68,12 @@ export const EventTableToolbar = () => {
           <Input
             placeholder="Search events, cities, zones..."
             value={search}
-            onChange={(e) =>
-              setParams({ search: e.target.value || null, page: 1 })
-            }
+            onChange={(e) => {
+              const value = e.target.value;
+              startTransition(() => {
+                setParams({ search: value || null, page: 1 });
+              });
+            }}
             className="pl-9 pr-16 h-9 rounded-lg bg-card border-border/60 transition-all focus:border-brand-pink/40 focus:ring-brand-pink/15"
           />
           <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden items-center gap-0.5 rounded-md border border-border/60 bg-muted/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50 sm:flex">

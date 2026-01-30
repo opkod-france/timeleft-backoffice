@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -63,19 +64,32 @@ const stats: StatConfig[] = [
   },
 ];
 
-export const EventStats = ({ events, isLoading }: EventStatsProps) => {
-  const counts = {
-    total: events?.length ?? 0,
-    upcoming: events?.filter((e) => e.status === "upcoming").length ?? 0,
-    live: events?.filter((e) => e.status === "live").length ?? 0,
-    past: events?.filter((e) => e.status === "past").length ?? 0,
-  };
+export const EventStats = memo(function EventStats({ events, isLoading }: EventStatsProps) {
+  const { counts, avgFill } = useMemo(() => {
+    if (!events || events.length === 0) {
+      return {
+        counts: { total: 0, upcoming: 0, live: 0, past: 0 },
+        avgFill: 0,
+      };
+    }
 
-  const avgFill = events?.length
-    ? Math.round(
-        (events.reduce((sum, e) => sum + fillRate(e), 0) / events.length) * 100
-      )
-    : 0;
+    let upcoming = 0;
+    let live = 0;
+    let past = 0;
+    let fillSum = 0;
+
+    for (const e of events) {
+      if (e.status === "upcoming") upcoming++;
+      else if (e.status === "live") live++;
+      else past++;
+      fillSum += fillRate(e);
+    }
+
+    return {
+      counts: { total: events.length, upcoming, live, past },
+      avgFill: Math.round((fillSum / events.length) * 100),
+    };
+  }, [events]);
 
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
@@ -129,4 +143,4 @@ export const EventStats = ({ events, isLoading }: EventStatsProps) => {
       ))}
     </div>
   );
-};
+});
