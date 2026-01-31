@@ -1,6 +1,26 @@
 # Timeleft Back-Office
 
+![Node](https://img.shields.io/badge/Node.js-22+-5FA04E?logo=nodedotjs&logoColor=white)
+![npm](https://img.shields.io/badge/npm-10+-CB3837?logo=npm&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+
 Internal back-office dashboard for the Timeleft operations team to manage and monitor events.
+
+### Light mode
+
+![Dashboard — Light mode](docs/screenshots/dashboard-light.png)
+
+### Dark mode
+
+![Dashboard — Dark mode](docs/screenshots/dashboard-dark.png)
+
+### Event detail sheet
+
+![Event detail sheet](docs/screenshots/detail-sheet-dark.png)
 
 ## Prerequisites
 
