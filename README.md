@@ -2,6 +2,11 @@
 
 Internal back-office dashboard for the Timeleft operations team to manage and monitor events.
 
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) **22+** — managed via [asdf](https://asdf-vm.com/) (recommended) or `.nvmrc`
+- npm 10+
+
 ## Quick Start
 
 ```bash
@@ -9,11 +14,24 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — redirects to `/login`. Demo credentials: `admin@timeleft.com` / `timeleft2025`
+Open [localhost:3000](http://localhost:3000) and sign in with the demo account:
+
+| | |
+|---|---|
+| **Email** | `admin@timeleft.com` |
+| **Password** | `timeleft2025` |
 
 ## Tech Stack
 
-Next.js 16 (App Router) · shadcn/ui · TanStack Table v8 · TanStack Query v5 · nuqs · React Hook Form · Tailwind CSS v4 · Phosphor Icons · date-fns
+- [Next.js 16](https://nextjs.org/) — App Router, standalone output
+- [Tailwind CSS v4](https://tailwindcss.com/) — Utility-first styling with OKLch theming
+- [shadcn/ui](https://ui.shadcn.com/) — Accessible UI primitives (Radix + Tailwind)
+- [TanStack Table v8](https://tanstack.com/table) — Headless table with sorting and pagination
+- [TanStack Query v5](https://tanstack.com/query) — Data fetching, caching, background refetch
+- [nuqs](https://nuqs.47ng.com/) — Type-safe URL search params for Next.js
+- [React Hook Form](https://react-hook-form.com/) — Performant form handling
+- [Phosphor Icons](https://phosphoricons.com/) — Flexible icon library
+- [date-fns](https://date-fns.org/) — Lightweight date utilities
 
 ## Routes
 
@@ -55,8 +73,8 @@ src/
 
 ## Deployment
 
-Docker + GitHub Actions → GHCR → Dokploy. See [ARCHITECTURE.md](./ARCHITECTURE.md) for details.
+Docker + GitHub Actions → GHCR → Dokploy. See the [architecture guide](./ARCHITECTURE.md) for the full deployment pipeline.
 
 ## Detailed Documentation
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for full architecture, data flow diagrams, state management breakdown, component tree, and data model.
+For in-depth coverage — data flow diagrams, state management breakdown, component tree, data model, and deployment pipeline — see the [architecture guide](./ARCHITECTURE.md).

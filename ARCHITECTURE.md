@@ -18,6 +18,14 @@ Detailed technical documentation for the Timeleft Back-Office application.
 - [Features Breakdown](#features-breakdown)
 - [Key Decisions](#key-decisions)
 - [Deployment](#deployment)
+  - [Overview](#overview)
+  - [Files](#files)
+  - [CI Pipeline — GitHub Actions](#ci-pipeline--github-actions)
+  - [Docker Build — Multi-Stage](#docker-build--multi-stage)
+  - [Infrastructure — Dokploy](#infrastructure--dokploy)
+  - [Required Secrets](#required-secrets)
+  - [Manual Deployment](#manual-deployment)
+  - [Local Docker Build](#local-docker-build)
 
 ---
 
@@ -294,7 +302,9 @@ graph TD
 
 ## Deployment
 
-**Pipeline:** GitHub Actions → Docker (GHCR) → Dokploy
+### Overview
+
+Every push to `main` triggers a fully automated pipeline: build a Docker image, push it to GitHub Container Registry, and deploy to the production server via a Dokploy webhook.
 
 ```mermaid
 flowchart LR
@@ -313,11 +323,112 @@ flowchart LR
     style DEPLOY fill:#10b981,color:#fff
 ```
 
-**Docker image:** Multi-stage build (deps → builder → runner) on Node 22 Alpine with non-root user. Next.js `output: "standalone"` produces a self-contained `server.js`.
+**Live URL:** `https://timeleft.opkod.dev`
+**Container registry:** `ghcr.io/opkod-france/timeleft-backoffice`
+**Infrastructure:** Dokploy at `https://infra.opkod.dev`
 
-**Files:**
-- `.github/workflows/deploy.yml` — Build, push to GHCR, trigger Dokploy webhook
-- `Dockerfile` — Multi-stage production build
-- `.dockerignore` — Excludes node_modules, .next, .env, .git
+### Files
 
-**Secret required:** `DOKPLOY_WEBHOOK_URL` (set in GitHub repo settings)
+| File | Purpose |
+|------|---------|
+| `.github/workflows/deploy.yml` | CI pipeline — build, push image, trigger deploy |
+| `Dockerfile` | Multi-stage production build |
+| `.dockerignore` | Excludes node_modules, .next, .env, .git from Docker context |
+| `next.config.ts` | `output: "standalone"` — enables self-contained server.js |
+
+### CI Pipeline — GitHub Actions
+
+**Trigger:** Push to `main` or manual dispatch (`workflow_dispatch`).
+
+**Steps:**
+
+1. **Checkout** — `actions/checkout@v4`
+2. **Setup Buildx** — `docker/setup-buildx-action@v3` for build caching
+3. **Login to GHCR** — Authenticates with `GITHUB_TOKEN` (automatic, no manual secret needed)
+4. **Extract metadata** — `docker/metadata-action@v5` generates image tags:
+   - Branch name (e.g., `main`)
+   - Short commit SHA (e.g., `a1b2c3d`)
+   - `latest`
+5. **Build & push** — `docker/build-push-action@v5` builds the multi-stage Dockerfile and pushes to GHCR. Uses GitHub Actions cache (`type=gha`) for layer reuse across builds.
+6. **Trigger Dokploy** — On success, sends a `POST` to the Dokploy webhook URL. Dokploy pulls the new `latest` image and restarts the container.
+
+**Permissions:** The workflow only needs `contents: read` and `packages: write`.
+
+### Docker Build — Multi-Stage
+
+The Dockerfile uses three stages to minimize the final image size:
+
+```
+┌──────────────────────────────────────────┐
+│  Stage 1: deps                           │
+│  node:22-alpine                          │
+│  npm ci --legacy-peer-deps               │
+│  → node_modules/                         │
+├──────────────────────────────────────────┤
+│  Stage 2: builder                        │
+│  Copies node_modules from deps           │
+│  npm run build                           │
+│  → .next/standalone/ + .next/static/     │
+├──────────────────────────────────────────┤
+│  Stage 3: runner                         │
+│  node:22-alpine (clean)                  │
+│  Copies only standalone + static + public│
+│  Non-root user (nextjs:nodejs, UID 1001) │
+│  CMD ["node", "server.js"]               │
+└──────────────────────────────────────────┘
+```
+
+**Why three stages:**
+- **deps** — Installs dependencies once. If `package.json` hasn't changed, Docker caches this entire layer.
+- **builder** — Runs `next build`. The `output: "standalone"` config produces a self-contained `server.js` that bundles only the Node.js modules each page actually needs (~50 MB vs ~300+ MB with full node_modules).
+- **runner** — Copies only `standalone/`, `static/`, and `public/` into a clean Alpine image. No build tools, no source code, no dev dependencies in production.
+
+**Security:** The final stage creates a non-root `nextjs` user (UID 1001) and runs the process under that user.
+
+**Runtime config:**
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `NODE_ENV` | `production` | Enables Next.js production optimizations |
+| `NEXT_TELEMETRY_DISABLED` | `1` | Disables Next.js telemetry |
+| `HOSTNAME` | `0.0.0.0` | Binds to all interfaces (required inside containers) |
+| `PORT` | `3000` | Application port |
+
+### Infrastructure — Dokploy
+
+Dokploy (`https://infra.opkod.dev`) orchestrates container deployment on the production server. The app is configured as a Docker-based application that:
+
+1. Pulls from `ghcr.io/opkod-france/timeleft-backoffice:latest`
+2. Exposes port 3000
+3. Serves traffic at `https://timeleft.opkod.dev`
+
+Dokploy handles TLS termination, container lifecycle (health checks, restarts), and log aggregation.
+
+### Required Secrets
+
+| Secret | Where to set | Purpose |
+|--------|-------------|---------|
+| `DOKPLOY_WEBHOOK_URL` | GitHub repo settings → Secrets → Actions | Triggers Dokploy to pull and deploy the new image |
+| `GITHUB_TOKEN` | Automatic | Authenticates to GHCR (provided by GitHub Actions, no manual setup) |
+
+### Manual Deployment
+
+To deploy without pushing code (e.g., redeploy after a Dokploy config change):
+
+1. **Via GitHub Actions UI:** Go to Actions → Deploy → Run workflow
+2. **Via Dokploy dashboard:** Manually trigger a redeploy at `https://infra.opkod.dev`
+
+### Local Docker Build
+
+To test the Docker build locally:
+
+```bash
+# Build
+docker build -t timeleft-backoffice .
+
+# Run
+docker run -p 3000:3000 timeleft-backoffice
+
+# Verify
+open http://localhost:3000
+```
