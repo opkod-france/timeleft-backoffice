@@ -21,6 +21,8 @@ Open [localhost:3000](http://localhost:3000) and sign in with the demo account:
 | **Email** | `admin@timeleft.com` |
 | **Password** | `timeleft2025` |
 
+> **Note:** Authentication is static — credentials are hardcoded client-side and not connected to any user database. This is intentional for demo consistency; production would use a proper auth provider.
+
 ## Tech Stack
 
 - [Next.js 16](https://nextjs.org/) — App Router, standalone output
@@ -38,7 +40,7 @@ Open [localhost:3000](http://localhost:3000) and sign in with the demo account:
 | Route | Purpose |
 |-------|---------|
 | `/` | Redirects to `/login` |
-| `/login` | Authentication (demo credentials) |
+| `/login` | Static demo login |
 | `/events` | Events dashboard (protected) |
 
 ## Features
@@ -73,7 +75,13 @@ src/
 
 ## Deployment
 
-Docker + GitHub Actions → GHCR → Dokploy. See the [architecture guide](./ARCHITECTURE.md) for the full deployment pipeline.
+Pushes to `main` trigger an automated pipeline:
+
+1. **GitHub Actions** builds a Docker image (multi-stage, Node 22 Alpine)
+2. **GHCR** hosts the image at `ghcr.io/opkod-france/timeleft-backoffice`
+3. **Dokploy** pulls and deploys via webhook to `timeleft.opkod.dev`
+
+See the [architecture guide](./ARCHITECTURE.md) for the full pipeline details, secrets setup, and local Docker build instructions.
 
 ## Detailed Documentation
 
