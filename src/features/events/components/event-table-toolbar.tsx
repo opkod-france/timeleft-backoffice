@@ -30,8 +30,6 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { eventsSearchParams, CATEGORY_VALUES } from "@/features/events/search-params";
 import { statusLabel, STATUS_OPTIONS, categoryConfig } from "@/features/events/helpers";
-import type { EventCategory } from "@/features/events/types";
-
 export const EventTableToolbar = () => {
   const [{ search, status, dateFrom, dateTo, types }, setParams] =
     useQueryStates(
@@ -76,7 +74,7 @@ export const EventTableToolbar = () => {
             }}
             className="pl-9 pr-16 h-9 rounded-lg bg-card border-border/60 transition-all focus:border-brand-pink/40 focus:ring-brand-pink/15"
           />
-          <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden items-center gap-0.5 rounded-md border border-border/60 bg-muted/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/50 sm:flex">
+          <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden items-center gap-0.5 rounded-md border border-border/60 bg-muted/60 px-1.5 py-0.5 text-2xs font-medium text-muted-foreground/50 sm:flex">
             <span className="text-xs">&#8984;</span>K
           </kbd>
         </div>
@@ -91,7 +89,7 @@ export const EventTableToolbar = () => {
             })
           }
         >
-          <SelectTrigger className="w-[150px] h-9 rounded-lg bg-card border-border/60 transition-all data-[state=open]:border-brand-pink/40">
+          <SelectTrigger className="w-38 h-9 rounded-lg bg-card border-border/60 transition-all data-[state=open]:border-brand-pink/40">
             <div className="flex items-center gap-1.5">
               <SlidersHorizontal className="size-3.5 text-muted-foreground/60" />
               <SelectValue placeholder="All statuses" />
@@ -124,7 +122,7 @@ export const EventTableToolbar = () => {
             <Button
               variant="outline"
               className={cn(
-                "h-9 w-[220px] cursor-pointer justify-start rounded-lg bg-card border-border/60 text-sm font-normal transition-all",
+                "h-9 w-56 cursor-pointer justify-start rounded-lg bg-card border-border/60 text-sm font-normal transition-all",
                 !dateFrom && !dateTo && "text-muted-foreground",
                 (dateFrom || dateTo) && "border-brand-pink/40"
               )}
@@ -177,10 +175,10 @@ export const EventTableToolbar = () => {
                   : `${types.length} type${types.length > 1 ? "s" : ""}`}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-2" align="start">
+          <PopoverContent className="w-52 p-2" align="start">
             <div className="flex flex-col gap-1">
               {CATEGORY_VALUES.map((cat) => {
-                const config = categoryConfig[cat as EventCategory];
+                const config = categoryConfig[cat];
                 const Icon = config.icon;
                 const isSelected = types.includes(cat);
                 return (
@@ -212,7 +210,7 @@ export const EventTableToolbar = () => {
                     </div>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-semibold uppercase tracking-wider ${config.className}`}
+                      className={`text-2xs font-semibold uppercase tracking-wider ${config.className}`}
                     >
                       <Icon className="size-3" />
                       {config.label}
@@ -241,7 +239,7 @@ export const EventTableToolbar = () => {
             }
             className="h-9 gap-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground"
           >
-            <span className="flex size-4 items-center justify-center rounded-full bg-brand-pink/10 text-[10px] font-semibold text-brand-pink dark:bg-brand-pink/20">
+            <span className="flex size-4 items-center justify-center rounded-full bg-brand-pink/10 text-2xs font-semibold text-brand-pink dark:bg-brand-pink/20">
               {activeFilterCount}
             </span>
             Clear

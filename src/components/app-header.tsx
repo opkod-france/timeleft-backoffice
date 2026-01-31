@@ -24,7 +24,7 @@ export function AppHeader() {
               alt="Timeleft"
               className="h-6 dark:brightness-0 dark:invert"
             />
-            <span className="hidden rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline">
+            <span className="hidden rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground sm:inline">
               Back Office
             </span>
           </div>
@@ -46,12 +46,12 @@ export function AppHeader() {
           <ThemeToggle />
           <button
             onClick={handleLogout}
-            className="cursor-pointer flex size-9 items-center justify-center rounded-full border border-border/60 bg-card text-muted-foreground transition-all hover:border-destructive/30 hover:text-destructive hover:shadow-[0_0_12px_-2px] hover:shadow-destructive/15"
+            className="cursor-pointer flex size-9 items-center justify-center rounded-full border border-border/60 bg-card text-muted-foreground transition-all hover:border-destructive/30 hover:text-destructive glow-hover-destructive"
             aria-label="Sign out"
           >
             <SignOut className="size-4" />
           </button>
-          <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-pink to-brand-pink/70 text-xs font-semibold text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-linear-to-br from-brand-pink to-brand-pink/70 text-xs font-semibold text-white">
             A
           </div>
         </div>

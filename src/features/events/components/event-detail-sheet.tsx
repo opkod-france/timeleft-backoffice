@@ -19,7 +19,7 @@ import {
   statusConfig,
   categoryConfig,
 } from "@/features/events/helpers";
-import type { TimeleftEvent, EventCategory } from "@/features/events/types";
+import type { TimeleftEvent } from "@/features/events/types";
 
 type EventDetailSheetProps = {
   events: TimeleftEvent[] | undefined;
@@ -50,8 +50,8 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
   const sConfig = statusConfig[event.status];
   const remaining = event.capacity - event.booked;
 
-  const type = event.type.toLowerCase() as EventCategory;
-  const catConfig = categoryConfig[type];
+  const type = event.type.toLowerCase();
+  const catConfig = categoryConfig[type as keyof typeof categoryConfig];
   const CatIcon = catConfig?.icon;
 
   const barColor =
@@ -86,7 +86,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
                 {catConfig && (
                   <Badge
                     variant="outline"
-                    className={`text-[10px] font-semibold uppercase tracking-wider ${catConfig.className}`}
+                    className={`text-2xs font-semibold uppercase tracking-wider ${catConfig.className}`}
                   >
                     <CatIcon className="size-3" />
                     {catConfig.label}
@@ -123,7 +123,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
           <div className="rounded-xl border border-border/60 bg-card p-4 dark:bg-muted/20">
             <div className="flex items-center gap-2 mb-3">
               <Users className="size-4 text-muted-foreground" />
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+              <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/70">
                 Capacity
               </span>
             </div>
@@ -167,7 +167,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
             <div className="flex flex-col gap-1.5 rounded-lg border border-border/40 bg-card/50 p-3 dark:bg-muted/10">
               <div className="flex items-center gap-1.5">
                 <Calendar className="size-3.5 text-muted-foreground/60" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <span className="text-2xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Date
                 </span>
               </div>
@@ -180,7 +180,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
             <div className="flex flex-col gap-1.5 rounded-lg border border-border/40 bg-card/50 p-3 dark:bg-muted/10">
               <div className="flex items-center gap-1.5">
                 <Clock className="size-3.5 text-muted-foreground/60" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <span className="text-2xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Time
                 </span>
               </div>
@@ -193,7 +193,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
             <div className="flex flex-col gap-1.5 rounded-lg border border-border/40 bg-card/50 p-3 dark:bg-muted/10">
               <div className="flex items-center gap-1.5">
                 <MapPin className="size-3.5 text-muted-foreground/60" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <span className="text-2xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Country
                 </span>
               </div>
@@ -206,7 +206,7 @@ export const EventDetailSheet = memo(function EventDetailSheet({ events }: Event
             <div className="flex flex-col gap-1.5 rounded-lg border border-border/40 bg-card/50 p-3 dark:bg-muted/10">
               <div className="flex items-center gap-1.5">
                 <Hash className="size-3.5 text-muted-foreground/60" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <span className="text-2xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Event ID
                 </span>
               </div>

@@ -59,8 +59,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Hydrate from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const initial = stored ?? "system";
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const initial: Theme = raw === "light" || raw === "dark" || raw === "system" ? raw : "system";
     setThemeState(initial);
     const resolved = initial === "system" ? getSystemTheme() : initial;
     applyClass(resolved);
@@ -84,7 +84,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handler = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY) return;
-      const newTheme = (e.newValue as Theme) ?? "system";
+      const v = e.newValue;
+      const newTheme: Theme = v === "light" || v === "dark" || v === "system" ? v : "system";
       setThemeState(newTheme);
       const resolved = newTheme === "system" ? getSystemTheme() : newTheme;
       applyClass(resolved);

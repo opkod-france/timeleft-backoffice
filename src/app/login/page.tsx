@@ -149,13 +149,13 @@ export default function LoginPage() {
         {/* Demo credentials */}
         <div className="mt-6 rounded-xl border border-dashed border-border/80 bg-muted/30 p-4">
           <div className="flex items-center justify-between mb-2.5">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+            <span className="text-2xs font-semibold uppercase tracking-widest text-muted-foreground/70">
               Demo Account
             </span>
             <button
               type="button"
               onClick={fillDemo}
-              className="rounded-full bg-brand-pink/10 px-2.5 py-1 text-[11px] font-medium text-brand-pink transition-colors hover:bg-brand-pink/20 dark:bg-brand-pink/15"
+              className="rounded-full bg-brand-pink/10 px-2.5 py-1 text-label font-medium text-brand-pink transition-colors hover:bg-brand-pink/20 dark:bg-brand-pink/15"
             >
               Auto-fill
             </button>
@@ -173,7 +173,7 @@ export default function LoginPage() {
         </div>
 
         {/* Version */}
-        <p className="mt-8 text-center text-[11px] text-muted-foreground/40">
+        <p className="mt-8 text-center text-label text-muted-foreground/40">
           v0.0.0-development
         </p>
       </div>

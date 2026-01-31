@@ -100,13 +100,13 @@ export const EventStats = memo(function EventStats({ events, isLoading }: EventS
         >
           {/* Accent bar at bottom */}
           <div
-            className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r ${barColor} opacity-0 transition-opacity group-hover:opacity-100`}
+            className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${barColor} opacity-0 transition-opacity group-hover:opacity-100`}
           />
 
           <div className="relative p-4 lg:p-5">
             {/* Header row */}
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+              <span className="text-label font-medium uppercase tracking-widest text-muted-foreground">
                 {label}
               </span>
               <div
@@ -125,7 +125,7 @@ export const EventStats = memo(function EventStats({ events, isLoading }: EventS
                   {counts[key].toLocaleString()}
                 </span>
                 {key === "total" && events && events.length > 0 && (
-                  <Badge variant="outline" className="mb-0.5 border-emerald-200 bg-emerald-50 text-[10px] font-medium text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+                  <Badge variant="outline" className="mb-0.5 border-emerald-200 bg-emerald-50 text-2xs font-medium text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
                     <TrendUp className="size-2.5" />
                     {avgFill}% avg fill
                   </Badge>

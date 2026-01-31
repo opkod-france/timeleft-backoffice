@@ -224,6 +224,30 @@
     background-color: var(--surface-elevated);
   }
 
+  /* Fine-grained text sizes for dense UI (labels, badges, kbd) */
+  .text-2xs {
+    font-size: 0.625rem;  /* 10px */
+    line-height: 1rem;
+  }
+
+  .text-label {
+    font-size: 0.6875rem; /* 11px */
+    line-height: 1rem;
+  }
+
+  /* Hover glow utilities */
+  .glow-hover-pink {
+    &:hover {
+      box-shadow: 0 0 12px -2px var(--glow-pink);
+    }
+  }
+
+  .glow-hover-destructive {
+    &:hover {
+      box-shadow: 0 0 12px -2px oklch(0.57 0.20 25 / 0.15);
+    }
+  }
+
   .glow-pink {
     box-shadow: 0 0 0 1px var(--border), 0 8px 32px -8px var(--glow-pink);
   }

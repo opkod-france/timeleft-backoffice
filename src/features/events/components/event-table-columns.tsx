@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ArrowsDownUp, ArrowUp, ArrowDown } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { TimeleftEvent, EventStatus, EventCategory } from "@/features/events/types";
+import type { TimeleftEvent, EventStatus } from "@/features/events/types";
 import { fillRate, statusLabel, statusConfig, categoryConfig } from "@/features/events/helpers";
 
 const STATUS_SORT_ORDER: Record<EventStatus, number> = {
@@ -32,7 +32,7 @@ const SortableHeader = ({
     <Button
       variant="ghost"
       size="sm"
-      className="-ml-3 h-7 cursor-pointer gap-1 text-[11px] font-semibold uppercase tracking-wider hover:bg-transparent hover:text-foreground"
+      className="-ml-3 h-7 cursor-pointer gap-1 text-label font-semibold uppercase tracking-wider hover:bg-transparent hover:text-foreground"
       onClick={column.getToggleSortingHandler()}
     >
       {label}
@@ -48,12 +48,12 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
     accessorKey: "type",
     header: "Type",
     cell: ({ row }) => {
-      const type = (row.getValue("type") as string).toLowerCase() as EventCategory;
-      const config = categoryConfig[type];
-      if (!config) return <span className="text-sm font-medium">{row.getValue("type")}</span>;
+      const type = row.original.type.toLowerCase();
+      const config = categoryConfig[type as keyof typeof categoryConfig];
+      if (!config) return <span className="text-sm font-medium">{row.original.type}</span>;
       const Icon = config.icon;
       return (
-        <Badge variant="outline" className={`text-[10px] font-semibold uppercase tracking-wider ${config.className}`}>
+        <Badge variant="outline" className={`text-2xs font-semibold uppercase tracking-wider ${config.className}`}>
           <Icon className="size-3" />
           {config.label}
         </Badge>
@@ -64,7 +64,7 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
     accessorKey: "date",
     header: ({ column }) => <SortableHeader column={column} label="Date" />,
     cell: ({ row }) => {
-      const date = new Date(row.getValue("date") as string);
+      const date = new Date(row.original.date);
       return (
         <div className="flex flex-col">
           <span className="text-sm">{format(date, "MMM d, yyyy")}</span>
@@ -75,8 +75,8 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
       );
     },
     sortingFn: (rowA, rowB) => {
-      const a = new Date(rowA.getValue("date") as string).getTime();
-      const b = new Date(rowB.getValue("date") as string).getTime();
+      const a = new Date(rowA.original.date).getTime();
+      const b = new Date(rowB.original.date).getTime();
       return a - b;
     },
   },
@@ -114,7 +114,7 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
             : "bg-blue-500 dark:bg-blue-400";
 
       return (
-        <div className="flex items-center gap-3 min-w-[120px]">
+        <div className="flex items-center gap-3 min-w-32">
           <div className="flex flex-col gap-1.5 flex-1">
             <div className="flex justify-between text-xs">
               <span className="font-data">
@@ -144,7 +144,7 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
       <SortableHeader column={column} label="Status" />
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status") as EventStatus;
+      const status = row.original.status;
       const config = statusConfig[status];
       return (
         <Badge variant={config.variant} className={config.className}>
@@ -159,7 +159,7 @@ export const columns: ColumnDef<TimeleftEvent>[] = [
       );
     },
     sortingFn: (rowA, rowB) =>
-      STATUS_SORT_ORDER[rowA.getValue("status") as EventStatus] -
-      STATUS_SORT_ORDER[rowB.getValue("status") as EventStatus],
+      STATUS_SORT_ORDER[rowA.original.status] -
+      STATUS_SORT_ORDER[rowB.original.status],
   },
 ];

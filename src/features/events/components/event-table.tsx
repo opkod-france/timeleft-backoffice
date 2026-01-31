@@ -26,7 +26,7 @@ import { EventStats } from "./event-stats";
 import { EventTableToolbar } from "./event-table-toolbar";
 import { EventTablePagination } from "./event-table-pagination";
 import { EventDetailSheet } from "./event-detail-sheet";
-import type { TimeleftEvent, EventCategory } from "@/features/events/types";
+import type { TimeleftEvent } from "@/features/events/types";
 import { ArrowsClockwise } from "@phosphor-icons/react";
 
 export const EventTable = () => {
@@ -75,7 +75,7 @@ export const EventTable = () => {
 
     for (const e of events) {
       if (hasStatus && e.status !== status) continue;
-      if (hasTypes && !typesSet!.has(e.type.toLowerCase() as EventCategory)) continue;
+      if (hasTypes && !typesSet!.has(e.type.toLowerCase())) continue;
       if (hasSearch) {
         const match =
           e.type.toLowerCase().includes(term) ||
@@ -195,7 +195,7 @@ export const EventTable = () => {
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70"
+                      className="text-label font-semibold uppercase tracking-wider text-muted-foreground/70"
                     >
                       {header.isPlaceholder
                         ? null

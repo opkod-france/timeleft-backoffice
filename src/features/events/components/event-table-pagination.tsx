@@ -53,7 +53,7 @@ export const EventTablePagination = <T,>({
               setParams({ perPage: Number(value), page: 1 })
             }
           >
-            <SelectTrigger size="sm" className="w-[60px] h-7 rounded-md text-xs border-border/60">
+            <SelectTrigger size="sm" className="w-18 h-7 rounded-md text-xs border-border/60">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
