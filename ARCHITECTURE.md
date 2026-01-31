@@ -84,10 +84,10 @@ src/
 | Route | Component | Type | Purpose |
 |-------|-----------|------|---------|
 | `/` | `Home` | Server | `redirect("/login")` |
-| `/login` | `LoginPage` | Client | Email + password form with demo credentials |
+| `/login` | `LoginPage` | Client | Static demo login (hardcoded credentials) |
 | `/events` | `EventsPage` | Client | Events dashboard wrapped in `ProtectedRoute` |
 
-Authentication is a simple `localStorage` flag (`timeleft-auth = "1"`). `ProtectedRoute` checks this flag on mount and redirects to `/login` if absent. This is a demo/internal tool — production would use OAuth or JWT.
+Authentication is static — credentials are hardcoded client-side and validated against a `localStorage` flag (`timeleft-auth = "1"`). `ProtectedRoute` checks this flag on mount and redirects to `/login` if absent. There is no user database; this exists for demo consistency. Production would use a proper auth provider (OAuth, JWT, etc.).
 
 **Demo credentials:** `admin@timeleft.com` / `timeleft2025`
 
@@ -216,7 +216,7 @@ The app uses a layered state management approach — each layer owns a specific 
 | URL state | nuqs | Page, sort, order, status, search, dateFrom, dateTo, types, selected event |
 | Client state | React useState | Password visibility, form submission state |
 | Context state | ThemeProvider | Light/dark/system theme with `localStorage` persistence |
-| Auth state | localStorage | Simple flag-based authentication (`timeleft-auth`) |
+| Auth state | localStorage | Static demo flag (`timeleft-auth`) — no user database |
 
 ---
 
@@ -432,3 +432,5 @@ docker run -p 3000:3000 timeleft-backoffice
 # Verify
 open http://localhost:3000
 ```
+
+---
